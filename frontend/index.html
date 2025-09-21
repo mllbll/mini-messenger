@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Messenger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h1 class="auth-title">Mini Messenger</h1>
+                <p class="auth-subtitle">Connect with your friends</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+            
+            <form id="authForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" id="authBtn" class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <div class="auth-switch">
+                <a href="#" id="switchMode">Don't have an account? Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appScreen" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <h3 id="userName">User</h3>
+                        <p>Online</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search chats...">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary btn-sm" onclick="showUserSearchModal()">
+                        <i class="fas fa-user-plus"></i> Найти пользователя
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="showCreatePublicChatForm()">
+                        <i class="fas fa-users"></i> Публичный чат
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="showCreatePrivateChatForm()">
+                        <i class="fas fa-user"></i> Приватный чат
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="showQuickMessageForm()">
+                        <i class="fas fa-paper-plane"></i> Быстрое сообщение
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chats-list" id="chatsList">
+                <!-- Chats will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-header-avatar" id="chatAvatar">C</div>
+                    <div class="chat-header-details">
+                        <h3 id="chatName">Select a chat</h3>
+                        <p id="chatStatus">Choose from the sidebar</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" title="Video Call">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="action-btn" title="Voice Call">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                    <button class="action-btn" title="More">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h3>Select a chat</h3>
+                    <p>Choose a chat from the sidebar to start messaging</p>
+                </div>
+            </div>
+            
+            <div class="message-input-container">
+                <div class="message-input-wrapper">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Type a message...">
+                    <div class="input-actions">
+                        <button class="input-btn" title="Attach">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="input-btn" title="Emoji">
+                            <i class="fas fa-smile"></i>
+                        </button>
+                        <button class="input-btn send-btn" id="sendBtn" title="Send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Search Modal -->
+    <div id="userSearchModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Найти пользователя</h3>
+                <button class="modal-close" onclick="closeUserSearchModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="userSearchInput" class="form-input" placeholder="Введите username пользователя">
+                </div>
+                <button class="btn btn-primary" onclick="searchUsers()">Поиск</button>
+                
+                <div id="searchResults" class="search-results" style="display: none;">
+                    <h4>Результаты поиска:</h4>
+                    <div id="usersList" class="users-list">
+                        <!-- Users will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=11"></script>
+
+    <!-- Create Chat Modal -->
+    <div id="createChatModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Создать чат</h3>
+                <button class="modal-close" onclick="closeCreateChatModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-options">
+                    <button class="btn btn-primary btn-full" onclick="showCreatePublicChatForm()">
+                        <i class="fas fa-users"></i> Создать публичный чат
+                    </button>
+                    <button class="btn btn-secondary btn-full" onclick="showCreatePrivateChatForm()">
+                        <i class="fas fa-user"></i> Создать приватный чат
+                    </button>
+                    <button class="btn btn-success btn-full" onclick="showQuickMessageForm()">
+                        <i class="fas fa-paper-plane"></i> Быстрое сообщение
+                    </button>
+                </div>
+                
+                <!-- Create Public Chat Form -->
+                <div id="createPublicChatForm" class="chat-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Название чата</label>
+                        <input type="text" id="publicChatName" class="form-input" placeholder="Введите название чата">
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="closeCreateChatModal()">Отмена</button>
+                        <button class="btn btn-primary" onclick="createPublicChat()">Создать</button>
+                    </div>
+                </div>
+                
+                <!-- Create Private Chat Form -->
+                <div id="createPrivateChatForm" class="chat-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Username пользователя</label>
+                        <input type="text" id="privateChatUsername" class="form-input" placeholder="Введите username">
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="closeCreateChatModal()">Отмена</button>
+                        <button class="btn btn-primary" onclick="createPrivateChatFromModal()">Создать</button>
+                    </div>
+                </div>
+                
+                <!-- Quick Message Form -->
+                <div id="quickMessageForm" class="chat-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Username пользователя</label>
+                        <input type="text" id="quickMessageUsername" class="form-input" placeholder="Введите username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Сообщение</label>
+                        <textarea id="quickMessageText" class="form-input" placeholder="Введите сообщение" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="closeCreateChatModal()">Отмена</button>
+                        <button class="btn btn-success" onclick="sendQuickMessageFromModal()">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

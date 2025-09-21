@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  test-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test_messenger
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d test_messenger"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test-backend:
+    build: ./backend
+    command: python -m pytest tests/ -v
+    volumes:
+      - ./backend:/app
+      - ./tests:/app/tests
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://test:test@test-db:5432/test_messenger
+    depends_on:
+      test-db:
+        condition: service_healthy
+    working_dir: /app
+
+  load-test:
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    command: python tests/load/load_test_runner.py
+    volumes:
+      - ./tests:/app/tests
+    environment:
+      - BACKEND_URL=http://test-backend:8000
+    depends_on:
+      - test-backend
+
+  security-test:
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    command: |
+      bandit -r backend/ -f json -o bandit-report.json &&
+      safety check --json --output safety-report.json &&
+      python -m pytest tests/security/ -v
+    volumes:
+      - ./backend:/app/backend
+      - ./tests:/app/tests
+    working_dir: /app
