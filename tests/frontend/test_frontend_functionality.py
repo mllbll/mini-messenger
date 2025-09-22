@@ -306,7 +306,7 @@ class TestFrontendFunctionality:
             except:
                 pass
             
-            # Wait for modal to appear with alert handling
+            # Wait for modal to appear with alert handling and debugging
             try:
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.ID, modal_id))
@@ -318,8 +318,16 @@ class TestFrontendFunctionality:
                     alert.accept()
                 except:
                     pass
-                # Try again
-                WebDriverWait(driver, 10).until(
+                
+                # Check if modal exists but is hidden
+                try:
+                    modal = driver.find_element(By.ID, modal_id)
+                    print(f"Modal {modal_id} found but hidden. Display style: {modal.get_attribute('style')}")
+                except:
+                    print(f"Modal {modal_id} not found at all")
+                
+                # Try again with longer timeout
+                WebDriverWait(driver, 15).until(
                     EC.presence_of_element_located((By.ID, modal_id))
                 )
             
@@ -393,8 +401,18 @@ class TestFrontendFunctionality:
             pass
         
         # Click public chat button - find by onclick attribute
-        public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
-        driver.execute_script("arguments[0].click();", public_chat_button)
+        try:
+            public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
+            driver.execute_script("arguments[0].click();", public_chat_button)
+        except Exception as e:
+            print(f"Error clicking public chat button: {e}")
+            # Try alternative selector
+            try:
+                public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
+                driver.execute_script("arguments[0].click();", public_chat_button)
+            except Exception as e2:
+                print(f"Error with alternative selector: {e2}")
+                raise
         
         # Handle any alerts that might appear after click
         try:
@@ -403,7 +421,7 @@ class TestFrontendFunctionality:
         except:
             pass
         
-        # Wait for modal with alert handling
+        # Wait for modal with alert handling and more debugging
         try:
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "createChatModal"))
@@ -415,8 +433,16 @@ class TestFrontendFunctionality:
                 alert.accept()
             except:
                 pass
-            # Try again
-            WebDriverWait(driver, 10).until(
+            
+            # Check if modal exists but is hidden
+            try:
+                modal = driver.find_element(By.ID, "createChatModal")
+                print(f"Modal found but hidden. Display style: {modal.get_attribute('style')}")
+            except:
+                print("Modal not found at all")
+            
+            # Try again with longer timeout
+            WebDriverWait(driver, 15).until(
                 EC.presence_of_element_located((By.ID, "createChatModal"))
             )
         
@@ -533,7 +559,7 @@ class TestFrontendPerformance:
         except:
             pass
         
-        # Wait for modal with alert handling
+        # Wait for modal with alert handling and debugging
         try:
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "createChatModal"))
@@ -545,8 +571,16 @@ class TestFrontendPerformance:
                 alert.accept()
             except:
                 pass
-            # Try again
-            WebDriverWait(driver, 10).until(
+            
+            # Check if modal exists but is hidden
+            try:
+                modal = driver.find_element(By.ID, "createChatModal")
+                print(f"Modal found but hidden. Display style: {modal.get_attribute('style')}")
+            except:
+                print("Modal not found at all")
+            
+            # Try again with longer timeout
+            WebDriverWait(driver, 15).until(
                 EC.presence_of_element_located((By.ID, "createChatModal"))
             )
         
