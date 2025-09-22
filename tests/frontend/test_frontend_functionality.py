@@ -52,9 +52,10 @@ class TestFrontendFunctionality:
         """Test user registration functionality."""
         driver.get(frontend_url)
         
-        # Switch to registration mode
+        # Switch to registration mode using JavaScript click to avoid modal interference
         switch_mode = driver.find_element(By.ID, "switchMode")
-        switch_mode.click()
+        driver.execute_script("arguments[0].click();", switch_mode)
+        time.sleep(0.5)  # Wait for UI to update
         
         # Find registration form elements
         username_input = driver.find_element(By.ID, "username")
@@ -91,7 +92,8 @@ class TestFrontendFunctionality:
         
         # First register a user
         switch_mode = driver.find_element(By.ID, "switchMode")
-        switch_mode.click()
+        driver.execute_script("arguments[0].click();", switch_mode)
+        time.sleep(0.5)  # Wait for UI to update
         
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
@@ -303,9 +305,10 @@ class TestFrontendFunctionality:
     
     def _register_and_login(self, driver, username, password):
         """Helper method to register and login a user."""
-        # Switch to registration mode
+        # Switch to registration mode using JavaScript click to avoid modal interference
         switch_mode = driver.find_element(By.ID, "switchMode")
-        switch_mode.click()
+        driver.execute_script("arguments[0].click();", switch_mode)
+        time.sleep(0.5)  # Wait for UI to update
         
         # Register
         username_input = driver.find_element(By.ID, "username")
@@ -397,7 +400,8 @@ class TestFrontendPerformance:
         
         # Register and login
         switch_mode = driver.find_element(By.ID, "switchMode")
-        switch_mode.click()
+        driver.execute_script("arguments[0].click();", switch_mode)
+        time.sleep(0.5)  # Wait for UI to update
         
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
