@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
 from app.db import Base, get_db
 from app.main import app
 from app.auth import create_access_token
+from app.models import User, Chat, ChatMember, Message
 
 fake = Faker()
 
@@ -54,7 +55,20 @@ def test_db_session(test_engine):
     try:
         yield session
     finally:
+        # Clean up data after each test
+        session.rollback()
         session.close()
+
+@pytest.fixture(autouse=True)
+def cleanup_database(test_db_session):
+    """Clean up database after each test."""
+    yield
+    # Clean up all data after each test
+    test_db_session.query(Message).delete()
+    test_db_session.query(ChatMember).delete()
+    test_db_session.query(Chat).delete()
+    test_db_session.query(User).delete()
+    test_db_session.commit()
 
 @pytest.fixture
 def client(test_db_session):
@@ -91,8 +105,9 @@ async def async_client(test_db_session):
 @pytest.fixture
 def test_user_data():
     """Generate test user data."""
+    import time
     return {
-        "username": fake.user_name(),
+        "username": f"testuser_{int(time.time() * 1000)}",
         "password": fake.password(length=12)
     }
 

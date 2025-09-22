@@ -20,20 +20,20 @@ class TestUserModel:
     def test_create_user(self, test_db_session):
         """Test creating a user."""
         user = User(
-            username="testuser",
+            username="testuser_unique_1",
             password_hash="hashed_password"
         )
         test_db_session.add(user)
         test_db_session.commit()
         
         assert user.id is not None
-        assert user.username == "testuser"
+        assert user.username == "testuser_unique_1"
         assert user.password_hash == "hashed_password"
     
     def test_user_unique_username(self, test_db_session):
         """Test that usernames must be unique."""
-        user1 = User(username="testuser", password_hash="hash1")
-        user2 = User(username="testuser", password_hash="hash2")
+        user1 = User(username="testuser_unique_2", password_hash="hash1")
+        user2 = User(username="testuser_unique_2", password_hash="hash2")
         
         test_db_session.add(user1)
         test_db_session.commit()
@@ -52,7 +52,7 @@ class TestUserModel:
     
     def test_user_password_hash_required(self, test_db_session):
         """Test that password_hash is required."""
-        user = User(username="testuser")
+        user = User(username="testuser_unique_3")
         test_db_session.add(user)
         
         with pytest.raises(IntegrityError):
@@ -96,7 +96,7 @@ class TestChatMemberModel:
     
     def test_create_chat_member(self, test_db_session):
         """Test creating a chat member."""
-        user = User(username="testuser", password_hash="hash")
+        user = User(username="testuser_unique_4", password_hash="hash")
         chat = Chat(name="Test Chat")
         test_db_session.add(user)
         test_db_session.add(chat)
@@ -124,7 +124,7 @@ class TestMessageModel:
     
     def test_create_message(self, test_db_session):
         """Test creating a message."""
-        user = User(username="testuser", password_hash="hash")
+        user = User(username="testuser_unique_5", password_hash="hash")
         chat = Chat(name="Test Chat")
         test_db_session.add(user)
         test_db_session.add(chat)
@@ -146,7 +146,7 @@ class TestMessageModel:
     
     def test_message_timestamp_default(self, test_db_session):
         """Test that timestamp has default value."""
-        user = User(username="testuser", password_hash="hash")
+        user = User(username="testuser_unique_6", password_hash="hash")
         chat = Chat(name="Test Chat")
         test_db_session.add(user)
         test_db_session.add(chat)
@@ -177,7 +177,7 @@ class TestModelRelationships:
     
     def test_user_chat_relationship(self, test_db_session):
         """Test user-chat relationship through ChatMember."""
-        user = User(username="testuser", password_hash="hash")
+        user = User(username="testuser_unique_7", password_hash="hash")
         chat = Chat(name="Test Chat")
         test_db_session.add(user)
         test_db_session.add(chat)
@@ -197,7 +197,7 @@ class TestModelRelationships:
     
     def test_chat_messages_relationship(self, test_db_session):
         """Test chat-messages relationship."""
-        user = User(username="testuser", password_hash="hash")
+        user = User(username="testuser_unique_8", password_hash="hash")
         chat = Chat(name="Test Chat")
         test_db_session.add(user)
         test_db_session.add(chat)

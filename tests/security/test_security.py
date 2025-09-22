@@ -212,9 +212,10 @@ class TestAuthorizationSecurity:
     @pytest.mark.security
     async def test_user_isolation(self, async_client: AsyncClient):
         """Test that users can only access their own data."""
-        # Create two users
-        user1_data = {"username": "user1", "password": "password123"}
-        user2_data = {"username": "user2", "password": "password123"}
+        import time
+        # Create two users with unique names
+        user1_data = {"username": f"user1_{int(time.time() * 1000)}", "password": "password123"}
+        user2_data = {"username": f"user2_{int(time.time() * 1000) + 1}", "password": "password123"}
         
         # Register both users
         await async_client.post("/api/users/register", json=user1_data)
@@ -262,8 +263,9 @@ class TestAuthorizationSecurity:
     @pytest.mark.security
     async def test_privilege_escalation_prevention(self, async_client: AsyncClient):
         """Test prevention of privilege escalation."""
+        import time
         # Create a regular user
-        user_data = {"username": "regularuser", "password": "password123"}
+        user_data = {"username": f"regularuser_{int(time.time() * 1000)}", "password": "password123"}
         await async_client.post("/api/users/register", json=user_data)
         
         login_response = await async_client.post("/api/users/login", json=user_data)
@@ -287,8 +289,9 @@ class TestAuthorizationSecurity:
     @pytest.mark.security
     async def test_token_reuse_after_logout(self, async_client: AsyncClient):
         """Test that tokens cannot be reused after logout."""
+        import time
         # Register and login user
-        user_data = {"username": "testuser", "password": "password123"}
+        user_data = {"username": f"testuser_{int(time.time() * 1000)}", "password": "password123"}
         await async_client.post("/api/users/register", json=user_data)
         
         login_response = await async_client.post("/api/users/login", json=user_data)
@@ -315,10 +318,11 @@ class TestRateLimitingSecurity:
     @pytest.mark.security
     async def test_registration_rate_limiting(self, async_client: AsyncClient):
         """Test rate limiting on user registration."""
+        import time
         # Try to register many users rapidly
         for i in range(100):
             user_data = {
-                "username": f"ratelimit_user_{i}",
+                "username": f"ratelimit_user_{int(time.time() * 1000)}_{i}",
                 "password": "password123"
             }
             
@@ -336,12 +340,13 @@ class TestRateLimitingSecurity:
     @pytest.mark.security
     async def test_login_brute_force_prevention(self, async_client: AsyncClient):
         """Test brute force prevention on login."""
+        import time
         # Register a user
-        user_data = {"username": "bruteforce_user", "password": "correct_password"}
+        user_data = {"username": f"bruteforce_user_{int(time.time() * 1000)}", "password": "correct_password"}
         await async_client.post("/api/users/register", json=user_data)
         
         # Try to login with wrong password many times
-        wrong_password_data = {"username": "bruteforce_user", "password": "wrong_password"}
+        wrong_password_data = {"username": user_data["username"], "password": "wrong_password"}
         
         for i in range(20):
             response = await async_client.post("/api/users/login", json=wrong_password_data)

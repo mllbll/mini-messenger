@@ -21,7 +21,7 @@ class TestUserEndpoints:
     async def test_register_user(self, async_client: AsyncClient):
         """Test user registration."""
         user_data = {
-            "username": "testuser",
+            "username": "testuser_api_1",
             "password": "testpassword123"
         }
         
@@ -29,7 +29,7 @@ class TestUserEndpoints:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["username"] == "testuser"
+        assert data["username"] == "testuser_api_1"
         assert "id" in data
         assert "password_hash" not in data
     
@@ -37,7 +37,7 @@ class TestUserEndpoints:
     async def test_register_duplicate_username(self, async_client: AsyncClient):
         """Test registration with duplicate username."""
         user_data = {
-            "username": "testuser",
+            "username": "testuser_api_2",
             "password": "testpassword123"
         }
         
@@ -54,7 +54,7 @@ class TestUserEndpoints:
     async def test_login_valid_credentials(self, async_client: AsyncClient):
         """Test login with valid credentials."""
         user_data = {
-            "username": "testuser",
+            "username": "testuser_api_3",
             "password": "testpassword123"
         }
         
@@ -73,7 +73,7 @@ class TestUserEndpoints:
     async def test_login_invalid_credentials(self, async_client: AsyncClient):
         """Test login with invalid credentials."""
         user_data = {
-            "username": "testuser",
+            "username": "testuser_api_4",
             "password": "testpassword123"
         }
         
@@ -82,7 +82,7 @@ class TestUserEndpoints:
         
         # Try to login with wrong password
         invalid_data = {
-            "username": "testuser",
+            "username": "testuser_api_4",
             "password": "wrongpassword"
         }
         
@@ -292,7 +292,7 @@ class TestInputValidation:
     async def test_register_short_password(self, async_client: AsyncClient):
         """Test registration with short password."""
         user_data = {
-            "username": "testuser",
+            "username": "testuser_api_4",
             "password": "123"
         }
         
