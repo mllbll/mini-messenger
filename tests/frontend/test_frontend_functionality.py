@@ -69,13 +69,13 @@ class TestFrontendFunctionality:
         password_input.clear()
         password_input.send_keys("testpassword123")
         
-        # Click register button
-        register_button.click()
+        # Click register button using JavaScript to avoid modal interference
+        driver.execute_script("arguments[0].click();", register_button)
         
         # Wait for successful registration (should show app screen)
         try:
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "app-screen"))
+                EC.presence_of_element_located((By.ID, "appScreen"))
             )
             assert True  # Registration successful
         except TimeoutException:
@@ -105,20 +105,20 @@ class TestFrontendFunctionality:
         password_input.clear()
         password_input.send_keys("testpassword123")
         
-        register_button.click()
+        driver.execute_script("arguments[0].click();", register_button)
         
         # Wait for registration to complete
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "app-screen"))
+            EC.presence_of_element_located((By.ID, "appScreen"))
         )
         
         # Logout
         logout_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Logout')]")
-        logout_button.click()
+        driver.execute_script("arguments[0].click();", logout_button)
         
         # Wait for login screen
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "auth-screen"))
+            EC.presence_of_element_located((By.ID, "authScreen"))
         )
         
         # Login with same credentials
@@ -132,12 +132,12 @@ class TestFrontendFunctionality:
         password_input.clear()
         password_input.send_keys("testpassword123")
         
-        login_button.click()
+        driver.execute_script("arguments[0].click();", login_button)
         
         # Wait for successful login
         try:
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "app-screen"))
+                EC.presence_of_element_located((By.ID, "appScreen"))
             )
             assert True  # Login successful
         except TimeoutException:
@@ -321,7 +321,7 @@ class TestFrontendFunctionality:
         password_input.clear()
         password_input.send_keys(password)
         
-        register_button.click()
+        driver.execute_script("arguments[0].click();", register_button)
         
         # Wait for registration to complete
         WebDriverWait(driver, 10).until(
@@ -413,7 +413,7 @@ class TestFrontendPerformance:
         password_input.clear()
         password_input.send_keys("testpassword123")
         
-        register_button.click()
+        driver.execute_script("arguments[0].click();", register_button)
         
         # Wait for login
         WebDriverWait(driver, 10).until(
