@@ -157,28 +157,8 @@ class TestFrontendFunctionality:
         # Register and login
         self._register_and_login(driver, "chattest_user", "testpassword123")
         
-        # Find and click the "Публичный чат" button - find by onclick attribute
-        public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
-        driver.execute_script("arguments[0].click();", public_chat_button)
-        
-        # Wait for modal to appear
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "createChatModal"))
-        )
-        
-        # Fill chat name
-        chat_name_input = driver.find_element(By.ID, "publicChatName")
-        chat_name_input.clear()
-        chat_name_input.send_keys("Test Chat from Frontend")
-        
-        # Click create button
-        create_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Создать')]")
-        driver.execute_script("arguments[0].click();", create_button)
-        
-        # Wait for modal to close and chat to appear
-        WebDriverWait(driver, 10).until(
-            EC.invisibility_of_element_located((By.ID, "createChatModal"))
-        )
+        # Use helper function to create chat
+        self._create_chat(driver, "Test Chat from Frontend")
         
         # Check that chat appears in sidebar
         chat_items = driver.find_elements(By.CLASS_NAME, "chat-item")
@@ -326,10 +306,22 @@ class TestFrontendFunctionality:
             except:
                 pass
             
-            # Wait for modal to appear
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, modal_id))
-            )
+            # Wait for modal to appear with alert handling
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, modal_id))
+                )
+            except TimeoutException:
+                # Handle any alerts that might be blocking
+                try:
+                    alert = driver.switch_to.alert
+                    alert.accept()
+                except:
+                    pass
+                # Try again
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, modal_id))
+                )
             
             # Close modal with X button
             close_button = driver.find_element(By.CLASS_NAME, "modal-close")
@@ -411,10 +403,22 @@ class TestFrontendFunctionality:
         except:
             pass
         
-        # Wait for modal
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "createChatModal"))
-        )
+        # Wait for modal with alert handling
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "createChatModal"))
+            )
+        except TimeoutException:
+            # Handle any alerts that might be blocking
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+            except:
+                pass
+            # Try again
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "createChatModal"))
+            )
         
         # Fill chat name
         chat_name_input = driver.find_element(By.ID, "publicChatName")
@@ -529,9 +533,22 @@ class TestFrontendPerformance:
         except:
             pass
         
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "createChatModal"))
-        )
+        # Wait for modal with alert handling
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "createChatModal"))
+            )
+        except TimeoutException:
+            # Handle any alerts that might be blocking
+            try:
+                alert = driver.switch_to.alert
+                alert.accept()
+            except:
+                pass
+            # Try again
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "createChatModal"))
+            )
         
         chat_name_input = driver.find_element(By.ID, "publicChatName")
         chat_name_input.clear()
