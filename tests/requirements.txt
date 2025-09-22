@@ -11,6 +11,10 @@ responses==0.24.1
 python-jose[cryptography]==3.3.0
 bcrypt==4.1.2
 
+# Frontend testing
+selenium==4.15.2
+webdriver-manager==4.0.1
+
 # Load testing
 locust==2.17.0
 aiohttp==3.9.1
