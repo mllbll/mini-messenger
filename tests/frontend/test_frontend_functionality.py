@@ -124,7 +124,7 @@ class TestFrontendFunctionality:
         # Login with same credentials
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
-        login_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]")
+        login_button = driver.find_element(By.ID, "authBtn")
         
         username_input.clear()
         username_input.send_keys("logintest_user")
@@ -146,6 +146,13 @@ class TestFrontendFunctionality:
     def test_chat_creation(self, driver, frontend_url):
         """Test chat creation functionality."""
         driver.get(frontend_url)
+        
+        # Handle any existing alerts
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
         
         # Register and login
         self._register_and_login(driver, "chattest_user", "testpassword123")
@@ -180,6 +187,13 @@ class TestFrontendFunctionality:
     def test_message_sending(self, driver, frontend_url):
         """Test message sending functionality."""
         driver.get(frontend_url)
+        
+        # Handle any existing alerts
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
         
         # Register and login
         self._register_and_login(driver, "messagetest_user", "testpassword123")
@@ -219,6 +233,13 @@ class TestFrontendFunctionality:
         """Test user search functionality."""
         driver.get(frontend_url)
         
+        # Handle any existing alerts
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
+        
         # Register and login
         self._register_and_login(driver, "searchtest_user", "testpassword123")
         
@@ -253,6 +274,13 @@ class TestFrontendFunctionality:
     def test_modal_functionality(self, driver, frontend_url):
         """Test modal window functionality."""
         driver.get(frontend_url)
+        
+        # Handle any existing alerts
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
         
         # Register and login
         self._register_and_login(driver, "modaltest_user", "testpassword123")
@@ -327,6 +355,13 @@ class TestFrontendFunctionality:
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "appScreen"))
         )
+        
+        # Handle any alerts that might appear
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass  # No alert present
     
     def _create_chat(self, driver, chat_name):
         """Helper method to create a chat."""
@@ -398,6 +433,13 @@ class TestFrontendPerformance:
         """Test handling of large messages."""
         driver.get("http://localhost:3000")
         
+        # Handle any existing alerts
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
+        
         # Register and login
         switch_mode = driver.find_element(By.ID, "switchMode")
         driver.execute_script("arguments[0].click();", switch_mode)
@@ -419,6 +461,13 @@ class TestFrontendPerformance:
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "appScreen"))
         )
+        
+        # Handle any alerts that might appear
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except:
+            pass
         
         # Create a chat
         public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
