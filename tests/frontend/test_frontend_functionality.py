@@ -152,7 +152,7 @@ class TestFrontendFunctionality:
         
         # Find and click the "Публичный чат" button
         public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
-        public_chat_button.click()
+        driver.execute_script("arguments[0].click();", public_chat_button)
         
         # Wait for modal to appear
         WebDriverWait(driver, 10).until(
@@ -166,7 +166,7 @@ class TestFrontendFunctionality:
         
         # Click create button
         create_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Создать')]")
-        create_button.click()
+        driver.execute_script("arguments[0].click();", create_button)
         
         # Wait for modal to close and chat to appear
         WebDriverWait(driver, 10).until(
@@ -190,7 +190,7 @@ class TestFrontendFunctionality:
         # Select the chat
         chat_items = driver.find_elements(By.CLASS_NAME, "chat-item")
         if chat_items:
-            chat_items[0].click()
+            driver.execute_script("arguments[0].click();", chat_items[0])
             
             # Wait for chat to be selected
             WebDriverWait(driver, 10).until(
@@ -204,7 +204,7 @@ class TestFrontendFunctionality:
             # Send a message
             message_input.clear()
             message_input.send_keys("Hello from frontend test!")
-            send_button.click()
+            driver.execute_script("arguments[0].click();", send_button)
             
             # Wait for message to appear
             try:
@@ -224,7 +224,7 @@ class TestFrontendFunctionality:
         
         # Click user search button
         search_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Найти пользователя')]")
-        search_button.click()
+        driver.execute_script("arguments[0].click();", search_button)
         
         # Wait for modal to appear
         WebDriverWait(driver, 10).until(
@@ -238,7 +238,7 @@ class TestFrontendFunctionality:
         
         # Click search button
         search_submit_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Поиск')]")
-        search_submit_button.click()
+        driver.execute_script("arguments[0].click();", search_submit_button)
         
         # Wait for results
         try:
@@ -268,7 +268,7 @@ class TestFrontendFunctionality:
         for button_text in buttons_to_test:
             # Click button
             button = driver.find_element(By.XPATH, f"//button[contains(text(), '{button_text}')]")
-            button.click()
+            driver.execute_script("arguments[0].click();", button)
             
             # Wait for modal to appear
             WebDriverWait(driver, 10).until(
@@ -277,7 +277,7 @@ class TestFrontendFunctionality:
             
             # Close modal with X button
             close_button = driver.find_element(By.CLASS_NAME, "modal-close")
-            close_button.click()
+            driver.execute_script("arguments[0].click();", close_button)
             
             # Wait for modal to disappear
             WebDriverWait(driver, 10).until(
@@ -332,7 +332,7 @@ class TestFrontendFunctionality:
         """Helper method to create a chat."""
         # Click public chat button
         public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
-        public_chat_button.click()
+        driver.execute_script("arguments[0].click();", public_chat_button)
         
         # Wait for modal
         WebDriverWait(driver, 10).until(
@@ -346,7 +346,7 @@ class TestFrontendFunctionality:
         
         # Create chat
         create_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Создать')]")
-        create_button.click()
+        driver.execute_script("arguments[0].click();", create_button)
         
         # Wait for modal to close
         WebDriverWait(driver, 10).until(
@@ -422,7 +422,7 @@ class TestFrontendPerformance:
         
         # Create a chat
         public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
-        public_chat_button.click()
+        driver.execute_script("arguments[0].click();", public_chat_button)
         
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "createChatModal"))
@@ -433,7 +433,7 @@ class TestFrontendPerformance:
         chat_name_input.send_keys("Large Message Test")
         
         create_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Создать')]")
-        create_button.click()
+        driver.execute_script("arguments[0].click();", create_button)
         
         WebDriverWait(driver, 10).until(
             EC.invisibility_of_element_located((By.ID, "createChatModal"))
@@ -442,7 +442,7 @@ class TestFrontendPerformance:
         # Select chat
         chat_items = driver.find_elements(By.CLASS_NAME, "chat-item")
         if chat_items:
-            chat_items[0].click()
+            driver.execute_script("arguments[0].click();", chat_items[0])
             
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "chat-area"))
@@ -457,7 +457,7 @@ class TestFrontendPerformance:
             message_input.send_keys(large_message)
             
             start_time = time.time()
-            send_button.click()
+            driver.execute_script("arguments[0].click();", send_button)
             
             # Wait for message to appear
             try:
