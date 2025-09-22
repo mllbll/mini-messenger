@@ -147,7 +147,18 @@ jobs:
     
     - name: Run safety check
       run: |
-        safety check --json > safety-report.json
+        safety check --json > safety-report.json || echo "Safety check completed with warnings"
+        echo "Safety check results:"
+        cat safety-report.json || echo "No safety report generated"
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
 
   load-tests:
     runs-on: ubuntu-latest

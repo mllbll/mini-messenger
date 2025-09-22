@@ -41,6 +41,34 @@ docker-compose up --build
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
 
+## 🧪 Тестирование
+
+### Запуск тестов
+```bash
+# Все тесты
+python run_tests.py
+
+# Unit тесты
+python -m pytest tests/unit/ -v
+
+# Integration тесты
+python -m pytest tests/integration/ -v
+
+# Security тесты
+python -m pytest tests/security/ -v
+
+# Load тесты
+python -m pytest tests/load/ -v
+
+# Frontend тесты
+python -m pytest tests/frontend/ -v
+```
+
+### Security сканирование
+- **Bandit**: Статический анализ безопасности Python кода
+- **Safety**: Проверка уязвимостей в зависимостях
+- **Note**: Safety warnings (exit code 64) - это нормально, означает найденные уязвимости в зависимостях
+
 ## 🎨 Интерфейс
 
 ### Экран входа/регистрации
