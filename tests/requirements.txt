@@ -18,8 +18,9 @@ aiohttp==3.9.1
 
 # Security testing
 bandit==1.7.5
-safety==3.0.1
+safety==2.3.5
 pbr==5.11.1
+typer==0.9.0
 
 # Performance testing
 memory-profiler==0.61.0

@@ -38,6 +38,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
         pip install -r tests/requirements.txt
+        pip install typer
     
     - name: Run unit tests
       env:
@@ -87,6 +88,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
         pip install -r tests/requirements.txt
+        pip install typer
     
     - name: Start backend server
       run: |
@@ -122,7 +124,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
         pip install -r tests/requirements.txt
-        pip install bandit safety pbr
+        pip install typer
+        pip install bandit safety pbr typer
     
     - name: Run security tests
       env:
@@ -177,6 +180,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
         pip install -r tests/requirements.txt
+        pip install typer
     
     - name: Start backend server
       run: |
@@ -217,6 +221,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
         pip install -r tests/requirements.txt
+        pip install typer
         pip install selenium
     
     - name: Install Chrome
