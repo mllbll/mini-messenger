@@ -50,13 +50,19 @@ def event_loop():
 @pytest.fixture
 def test_db_session():
     """Create test database session for model tests."""
-    from app.db import engine, SessionLocal, Base
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from app.db import Base
     from app.models import User, Chat, ChatMember, Message
     
-    # Create tables if they don't exist
-    Base.metadata.create_all(bind=engine)
+    # Create in-memory SQLite database for tests
+    test_engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
     
-    session = SessionLocal()
+    # Create tables if they don't exist
+    Base.metadata.create_all(bind=test_engine)
+    
+    session = TestSessionLocal()
     try:
         yield session
     finally:
