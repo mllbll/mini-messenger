@@ -194,8 +194,10 @@ jobs:
     - name: Install ChromeDriver
       run: |
         CHROME_VERSION=$(google-chrome --version | cut -d " " -f3 | cut -d "." -f1)
-        wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}/chromedriver_linux64.zip"
-        sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
+        # Use the new ChromeDriver download URL
+        wget -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip"
+        sudo unzip /tmp/chromedriver.zip -d /tmp/
+        sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
     
     - name: Start backend server

@@ -64,11 +64,15 @@ def cleanup_database(test_db_session):
     """Clean up database after each test."""
     yield
     # Clean up all data after each test
-    test_db_session.query(Message).delete()
-    test_db_session.query(ChatMember).delete()
-    test_db_session.query(Chat).delete()
-    test_db_session.query(User).delete()
-    test_db_session.commit()
+    try:
+        test_db_session.rollback()  # Rollback any pending transactions
+        test_db_session.query(Message).delete()
+        test_db_session.query(ChatMember).delete()
+        test_db_session.query(Chat).delete()
+        test_db_session.query(User).delete()
+        test_db_session.commit()
+    except Exception:
+        test_db_session.rollback()  # Rollback on any error
 
 @pytest.fixture
 def client(test_db_session):
@@ -101,6 +105,12 @@ async def async_client(test_db_session):
         yield client
     
     app.dependency_overrides.clear()
+
+@pytest.fixture
+async def simple_async_client():
+    """Create simple async test client without database dependency."""
+    async with httpx.AsyncClient(app=app, base_url="http://test") as client:
+        yield client
 
 @pytest.fixture
 def test_user_data():

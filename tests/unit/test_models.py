@@ -49,6 +49,9 @@ class TestUserModel:
         
         with pytest.raises(IntegrityError):
             test_db_session.commit()
+        
+        # Rollback the failed transaction
+        test_db_session.rollback()
     
     def test_user_password_hash_required(self, test_db_session):
         """Test that password_hash is required."""
@@ -57,6 +60,9 @@ class TestUserModel:
         
         with pytest.raises(IntegrityError):
             test_db_session.commit()
+        
+        # Rollback the failed transaction
+        test_db_session.rollback()
 
 
 class TestChatModel:
@@ -117,6 +123,9 @@ class TestChatMemberModel:
         
         with pytest.raises(IntegrityError):
             test_db_session.commit()
+        
+        # Rollback the failed transaction
+        test_db_session.rollback()
 
 
 class TestMessageModel:
@@ -170,6 +179,9 @@ class TestMessageModel:
         
         with pytest.raises(IntegrityError):
             test_db_session.commit()
+        
+        # Rollback the failed transaction
+        test_db_session.rollback()
 
 
 class TestModelRelationships:
