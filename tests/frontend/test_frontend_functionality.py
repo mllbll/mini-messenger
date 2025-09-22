@@ -8,9 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 class TestFrontendFunctionality:
@@ -26,13 +24,10 @@ class TestFrontendFunctionality:
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920,1080")
         
-        # Use webdriver-manager to automatically handle ChromeDriver version
-        try:
-            service = Service(ChromeDriverManager().install())
-            driver = webdriver.Chrome(service=service, options=chrome_options)
-        except Exception:
-            # Fallback to system ChromeDriver if webdriver-manager fails
-            driver = webdriver.Chrome(options=chrome_options)
+        # Use system ChromeDriver (installed by GitHub Actions)
+        chrome_options.add_argument("--disable-web-security")
+        chrome_options.add_argument("--allow-running-insecure-content")
+        driver = webdriver.Chrome(options=chrome_options)
         driver.implicitly_wait(10)
         yield driver
         driver.quit()
@@ -358,19 +353,14 @@ class TestFrontendPerformance:
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920,1080")
         
-        # Enable performance logging (without deprecated loggingPrefs)
-        chrome_options.add_experimental_option('perfLoggingPrefs', {
-            'enableNetwork': True,
-            'enablePage': True,
-        })
+        # Performance testing options
+        chrome_options.add_argument("--enable-logging")
+        chrome_options.add_argument("--log-level=0")
         
-        # Use webdriver-manager to automatically handle ChromeDriver version
-        try:
-            service = Service(ChromeDriverManager().install())
-            driver = webdriver.Chrome(service=service, options=chrome_options)
-        except Exception:
-            # Fallback to system ChromeDriver if webdriver-manager fails
-            driver = webdriver.Chrome(options=chrome_options)
+        # Use system ChromeDriver (installed by GitHub Actions)
+        chrome_options.add_argument("--disable-web-security")
+        chrome_options.add_argument("--allow-running-insecure-content")
+        driver = webdriver.Chrome(options=chrome_options)
         driver.implicitly_wait(10)
         yield driver
         driver.quit()
