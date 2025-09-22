@@ -18,7 +18,7 @@ class TestUserEndpoints:
     """Test user-related API endpoints."""
     
     @pytest.mark.asyncio
-    async def test_register_user(self, simple_async_client: AsyncClient):
+    async def test_register_user(self, simple_async_client):
         """Test user registration."""
         user_data = {
             "username": "testuser_api_1",
@@ -34,7 +34,7 @@ class TestUserEndpoints:
         assert "password_hash" not in data
     
     @pytest.mark.asyncio
-    async def test_register_duplicate_username(self, simple_async_client: AsyncClient):
+    async def test_register_duplicate_username(self, simple_async_client):
         """Test registration with duplicate username."""
         user_data = {
             "username": "testuser_api_2",
@@ -51,7 +51,7 @@ class TestUserEndpoints:
         assert "Username already exists" in response.json()["detail"]
     
     @pytest.mark.asyncio
-    async def test_login_valid_credentials(self, simple_async_client: AsyncClient):
+    async def test_login_valid_credentials(self, simple_async_client):
         """Test login with valid credentials."""
         user_data = {
             "username": "testuser_api_3",
@@ -70,7 +70,7 @@ class TestUserEndpoints:
         assert data["token_type"] == "bearer"
     
     @pytest.mark.asyncio
-    async def test_login_invalid_credentials(self, simple_async_client: AsyncClient):
+    async def test_login_invalid_credentials(self, simple_async_client):
         """Test login with invalid credentials."""
         user_data = {
             "username": "testuser_api_4",
@@ -92,7 +92,7 @@ class TestUserEndpoints:
         assert "Invalid credentials" in response.json()["detail"]
     
     @pytest.mark.asyncio
-    async def test_get_current_user(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_get_current_user(self, simple_async_client, auth_headers):
         """Test getting current user info."""
         response = await simple_async_client.get("/api/users/me", headers=auth_headers)
         
@@ -103,14 +103,14 @@ class TestUserEndpoints:
         assert "password_hash" not in data
     
     @pytest.mark.asyncio
-    async def test_get_current_user_unauthorized(self, simple_async_client: AsyncClient):
+    async def test_get_current_user_unauthorized(self, simple_async_client):
         """Test getting current user without authentication."""
         response = await simple_async_client.get("/api/users/me")
         
         assert response.status_code == 401
     
     @pytest.mark.asyncio
-    async def test_search_users(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_search_users(self, simple_async_client, auth_headers):
         """Test user search functionality."""
         # Create test users
         users_data = [
@@ -137,7 +137,7 @@ class TestChatEndpoints:
     """Test chat-related API endpoints."""
     
     @pytest.mark.asyncio
-    async def test_create_public_chat(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_create_public_chat(self, simple_async_client, auth_headers):
         """Test creating a public chat."""
         chat_data = {"name": "Test Chat"}
         
@@ -153,7 +153,7 @@ class TestChatEndpoints:
         assert "id" in data
     
     @pytest.mark.asyncio
-    async def test_create_private_chat(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_create_private_chat(self, simple_async_client, auth_headers):
         """Test creating a private chat."""
         # Create another user
         user_data = {"username": "otheruser", "password": "password123"}
@@ -172,7 +172,7 @@ class TestChatEndpoints:
         assert "Chat with otheruser" in data["name"]
     
     @pytest.mark.asyncio
-    async def test_get_chats(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_get_chats(self, simple_async_client, auth_headers):
         """Test getting user's chats."""
         # Create a chat
         await simple_async_client.post(
@@ -189,7 +189,7 @@ class TestChatEndpoints:
         assert data[0]["name"] == "Test Chat"
     
     @pytest.mark.asyncio
-    async def test_get_chats_unauthorized(self, simple_async_client: AsyncClient):
+    async def test_get_chats_unauthorized(self, simple_async_client):
         """Test getting chats without authentication."""
         response = await simple_async_client.get("/api/chats/")
         
@@ -200,7 +200,7 @@ class TestMessageEndpoints:
     """Test message-related API endpoints."""
     
     @pytest.mark.asyncio
-    async def test_send_message(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_send_message(self, simple_async_client, auth_headers):
         """Test sending a message."""
         # Create a chat first
         chat_response = await simple_async_client.post(
@@ -229,7 +229,7 @@ class TestMessageEndpoints:
         assert "timestamp" in data
     
     @pytest.mark.asyncio
-    async def test_get_messages(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_get_messages(self, simple_async_client, auth_headers):
         """Test getting messages from a chat."""
         # Create a chat and send a message
         chat_response = await simple_async_client.post(
@@ -261,7 +261,7 @@ class TestMessageEndpoints:
         assert data[0]["content"] == "Test message"
     
     @pytest.mark.asyncio
-    async def test_send_message_unauthorized(self, simple_async_client: AsyncClient):
+    async def test_send_message_unauthorized(self, simple_async_client):
         """Test sending message without authentication."""
         message_data = {
             "chat_id": 1,
@@ -277,7 +277,7 @@ class TestInputValidation:
     """Test input validation for API endpoints."""
     
     @pytest.mark.asyncio
-    async def test_register_empty_username(self, simple_async_client: AsyncClient):
+    async def test_register_empty_username(self, simple_async_client):
         """Test registration with empty username."""
         user_data = {
             "username": "",
@@ -289,7 +289,7 @@ class TestInputValidation:
         assert response.status_code == 422  # Validation error
     
     @pytest.mark.asyncio
-    async def test_register_short_password(self, simple_async_client: AsyncClient):
+    async def test_register_short_password(self, simple_async_client):
         """Test registration with short password."""
         user_data = {
             "username": "testuser_api_4",
@@ -301,7 +301,7 @@ class TestInputValidation:
         assert response.status_code == 422  # Validation error
     
     @pytest.mark.asyncio
-    async def test_send_empty_message(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_send_empty_message(self, simple_async_client, auth_headers):
         """Test sending empty message."""
         # Create a chat first
         chat_response = await simple_async_client.post(

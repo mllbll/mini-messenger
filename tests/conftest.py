@@ -107,10 +107,9 @@ async def async_client(test_db_session):
     app.dependency_overrides.clear()
 
 @pytest.fixture
-async def simple_async_client():
+def simple_async_client():
     """Create simple async test client without database dependency."""
-    async with httpx.AsyncClient(app=app, base_url="http://test") as client:
-        yield client
+    return httpx.AsyncClient(app=app, base_url="http://test")
 
 @pytest.fixture
 def test_user_data():

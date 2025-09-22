@@ -18,7 +18,7 @@ class TestAuthenticationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_invalid_token_format(self, simple_async_client: AsyncClient):
+    async def test_invalid_token_format(self, simple_async_client):
         """Test API with invalid token format."""
         invalid_headers = [
             {"Authorization": "InvalidToken"},
@@ -33,7 +33,7 @@ class TestAuthenticationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_expired_token(self, simple_async_client: AsyncClient):
+    async def test_expired_token(self, simple_async_client):
         """Test API with expired token."""
         # Create an expired token (expired 1 hour ago)
         from datetime import datetime, timedelta
@@ -49,7 +49,7 @@ class TestAuthenticationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_token_tampering(self, simple_async_client: AsyncClient):
+    async def test_token_tampering(self, simple_async_client):
         """Test API with tampered token."""
         # Create a valid token
         valid_token = create_access_token({"sub": "testuser"})
@@ -63,14 +63,14 @@ class TestAuthenticationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_missing_authorization_header(self, simple_async_client: AsyncClient):
+    async def test_missing_authorization_header(self, simple_async_client):
         """Test API without authorization header."""
         response = await simple_async_client.get("/api/users/me")
         assert response.status_code == 401
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_authorization_header_case_sensitivity(self, simple_async_client: AsyncClient):
+    async def test_authorization_header_case_sensitivity(self, simple_async_client):
         """Test that authorization header is case sensitive."""
         token = create_access_token({"sub": "testuser"})
         
@@ -91,7 +91,7 @@ class TestInputValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_xss_prevention_in_messages(self, simple_async_client: AsyncClient, auth_headers, malicious_inputs):
+    async def test_xss_prevention_in_messages(self, simple_async_client, auth_headers, malicious_inputs):
         """Test XSS prevention in message content."""
         # Create a chat first
         chat_response = await simple_async_client.post(
@@ -129,7 +129,7 @@ class TestInputValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_sql_injection_prevention(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_sql_injection_prevention(self, simple_async_client, auth_headers):
         """Test SQL injection prevention."""
         # Test SQL injection in username search
         sql_injection_payloads = [
@@ -156,7 +156,7 @@ class TestInputValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_path_traversal_prevention(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_path_traversal_prevention(self, simple_async_client, auth_headers):
         """Test path traversal prevention."""
         path_traversal_payloads = [
             "../../etc/passwd",
@@ -177,7 +177,7 @@ class TestInputValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_large_payload_prevention(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_large_payload_prevention(self, simple_async_client, auth_headers):
         """Test prevention of large payload attacks."""
         # Create a very large message
         large_message = "A" * (10 * 1024 * 1024)  # 10MB message
@@ -210,7 +210,7 @@ class TestAuthorizationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_user_isolation(self, simple_async_client: AsyncClient):
+    async def test_user_isolation(self, simple_async_client):
         """Test that users can only access their own data."""
         import time
         # Create two users with unique names
@@ -261,7 +261,7 @@ class TestAuthorizationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_privilege_escalation_prevention(self, simple_async_client: AsyncClient):
+    async def test_privilege_escalation_prevention(self, simple_async_client):
         """Test prevention of privilege escalation."""
         import time
         # Create a regular user
@@ -287,7 +287,7 @@ class TestAuthorizationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_token_reuse_after_logout(self, simple_async_client: AsyncClient):
+    async def test_token_reuse_after_logout(self, simple_async_client):
         """Test that tokens cannot be reused after logout."""
         import time
         # Register and login user
@@ -316,7 +316,7 @@ class TestRateLimitingSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_registration_rate_limiting(self, simple_async_client: AsyncClient):
+    async def test_registration_rate_limiting(self, simple_async_client):
         """Test rate limiting on user registration."""
         import time
         # Try to register many users rapidly
@@ -338,7 +338,7 @@ class TestRateLimitingSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_login_brute_force_prevention(self, simple_async_client: AsyncClient):
+    async def test_login_brute_force_prevention(self, simple_async_client):
         """Test brute force prevention on login."""
         import time
         # Register a user
@@ -366,7 +366,7 @@ class TestDataValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_username_validation(self, simple_async_client: AsyncClient):
+    async def test_username_validation(self, simple_async_client):
         """Test username validation and sanitization."""
         invalid_usernames = [
             "",  # Empty
@@ -389,7 +389,7 @@ class TestDataValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_password_validation(self, simple_async_client: AsyncClient):
+    async def test_password_validation(self, simple_async_client):
         """Test password validation."""
         invalid_passwords = [
             "",  # Empty
@@ -408,7 +408,7 @@ class TestDataValidationSecurity:
     
     @pytest.mark.asyncio
     @pytest.mark.security
-    async def test_message_content_validation(self, simple_async_client: AsyncClient, auth_headers):
+    async def test_message_content_validation(self, simple_async_client, auth_headers):
         """Test message content validation."""
         # Create a chat first
         chat_response = await simple_async_client.post(
