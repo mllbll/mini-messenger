@@ -124,6 +124,8 @@ def simple_async_client():
     def override_get_db():
         try:
             db = TestingSessionLocal()
+            # Ensure tables exist for this session
+            Base.metadata.create_all(bind=test_engine)
             yield db
         finally:
             db.close()
