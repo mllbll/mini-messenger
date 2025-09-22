@@ -112,8 +112,8 @@ class TestFrontendFunctionality:
             EC.presence_of_element_located((By.ID, "appScreen"))
         )
         
-        # Logout
-        logout_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Logout')]")
+        # Logout - find by title attribute since it's created dynamically
+        logout_button = driver.find_element(By.XPATH, "//button[@title='Logout']")
         driver.execute_script("arguments[0].click();", logout_button)
         
         # Wait for login screen
@@ -150,8 +150,8 @@ class TestFrontendFunctionality:
         # Register and login
         self._register_and_login(driver, "chattest_user", "testpassword123")
         
-        # Find and click the "Публичный чат" button
-        public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
+        # Find and click the "Публичный чат" button - find by onclick attribute
+        public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
         driver.execute_script("arguments[0].click();", public_chat_button)
         
         # Wait for modal to appear
@@ -222,8 +222,8 @@ class TestFrontendFunctionality:
         # Register and login
         self._register_and_login(driver, "searchtest_user", "testpassword123")
         
-        # Click user search button
-        search_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Найти пользователя')]")
+        # Click user search button - find by onclick attribute
+        search_button = driver.find_element(By.XPATH, "//button[@onclick='showUserSearchModal()']")
         driver.execute_script("arguments[0].click();", search_button)
         
         # Wait for modal to appear
@@ -259,20 +259,20 @@ class TestFrontendFunctionality:
         
         # Test modal opening and closing
         buttons_to_test = [
-            "Найти пользователя",
-            "Публичный чат",
-            "Приватный чат",
-            "Быстрое сообщение"
+            ("showUserSearchModal()", "userSearchModal"),
+            ("showCreatePublicChatForm()", "createChatModal"),
+            ("showCreatePrivateChatForm()", "createChatModal"),
+            ("showQuickMessageForm()", "createChatModal")
         ]
         
-        for button_text in buttons_to_test:
-            # Click button
-            button = driver.find_element(By.XPATH, f"//button[contains(text(), '{button_text}')]")
+        for onclick_func, modal_id in buttons_to_test:
+            # Click button by onclick attribute
+            button = driver.find_element(By.XPATH, f"//button[@onclick='{onclick_func}']")
             driver.execute_script("arguments[0].click();", button)
             
             # Wait for modal to appear
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "modal"))
+                EC.presence_of_element_located((By.ID, modal_id))
             )
             
             # Close modal with X button
@@ -281,7 +281,7 @@ class TestFrontendFunctionality:
             
             # Wait for modal to disappear
             WebDriverWait(driver, 10).until(
-                EC.invisibility_of_element_located((By.CLASS_NAME, "modal"))
+                EC.invisibility_of_element_located((By.ID, modal_id))
             )
     
     def test_responsive_design(self, driver, frontend_url):
@@ -330,8 +330,8 @@ class TestFrontendFunctionality:
     
     def _create_chat(self, driver, chat_name):
         """Helper method to create a chat."""
-        # Click public chat button
-        public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
+        # Click public chat button - find by onclick attribute
+        public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
         driver.execute_script("arguments[0].click();", public_chat_button)
         
         # Wait for modal
@@ -421,7 +421,7 @@ class TestFrontendPerformance:
         )
         
         # Create a chat
-        public_chat_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Публичный чат')]")
+        public_chat_button = driver.find_element(By.XPATH, "//button[@onclick='showCreatePublicChatForm()']")
         driver.execute_script("arguments[0].click();", public_chat_button)
         
         WebDriverWait(driver, 10).until(
