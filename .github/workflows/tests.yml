@@ -47,6 +47,7 @@ jobs:
         DB_PASSWORD: test
         DB_NAME: test_messenger
         DB_PORT: 5432
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         python -m pytest tests/unit/ -v --tb=short --cov=backend/app --cov-report=xml
     
@@ -101,6 +102,7 @@ jobs:
         DB_PASSWORD: test
         DB_NAME: test_messenger
         DB_PORT: 5432
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         python -m pytest tests/integration/ -v --tb=short
 
@@ -130,10 +132,13 @@ jobs:
         DB_PASSWORD: test
         DB_NAME: test_messenger
         DB_PORT: 5432
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         python -m pytest tests/security/ -v --tb=short
     
     - name: Run bandit security scan
+      env:
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         bandit -r backend/ -f json -o bandit-report.json
     
@@ -187,6 +192,7 @@ jobs:
         DB_PASSWORD: test
         DB_NAME: test_messenger
         DB_PORT: 5432
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         python tests/load/load_test_runner.py
 
@@ -249,5 +255,6 @@ jobs:
         DB_PASSWORD: test
         DB_NAME: test_messenger
         DB_PORT: 5432
+        SECRET_KEY: "test_secret_key_for_github_actions_123456789"
       run: |
         python -m pytest tests/frontend/ -v --tb=short
