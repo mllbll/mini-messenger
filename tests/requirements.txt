@@ -1,8 +1,8 @@
 # Testing dependencies
-pytest==7.4.3
-pytest-asyncio==0.21.1
+pytest==7.4.4
+pytest-asyncio==0.23.2
 pytest-cov==4.1.0
-httpx==0.25.2
+httpx==0.26.0
 faker==20.1.0
 factory-boy==3.3.0
 freezegun==1.2.2
@@ -13,17 +13,17 @@ selenium==4.15.2
 webdriver-manager==4.0.1
 
 # Load testing
-locust==2.17.0
+locust==2.20.0
 aiohttp==3.9.1
 
 # Security testing
 bandit==1.7.5
-safety==2.3.5
+safety==3.0.1
 pbr==5.11.1
 
 # Performance testing
 memory-profiler==0.61.0
-psutil==5.9.6
+psutil==5.9.8
 
 # Database testing
 pytest-postgresql==5.0.0
