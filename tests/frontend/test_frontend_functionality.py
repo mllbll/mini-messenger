@@ -45,17 +45,21 @@ class TestFrontendFunctionality:
         assert "Mini Messenger" in driver.title or "Messenger" in driver.title
         
         # Check that main elements are present
-        assert driver.find_element(By.CLASS_NAME, "auth-screen") is not None
-        assert driver.find_element(By.CLASS_NAME, "app-screen") is not None
+        assert driver.find_element(By.ID, "authScreen") is not None
+        assert driver.find_element(By.ID, "appScreen") is not None
     
     def test_user_registration(self, driver, frontend_url):
         """Test user registration functionality."""
         driver.get(frontend_url)
         
+        # Switch to registration mode
+        switch_mode = driver.find_element(By.ID, "switchMode")
+        switch_mode.click()
+        
         # Find registration form elements
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
-        register_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Register')]")
+        register_button = driver.find_element(By.ID, "authBtn")
         
         # Fill registration form
         username_input.clear()
@@ -86,9 +90,12 @@ class TestFrontendFunctionality:
         driver.get(frontend_url)
         
         # First register a user
+        switch_mode = driver.find_element(By.ID, "switchMode")
+        switch_mode.click()
+        
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
-        register_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Register')]")
+        register_button = driver.find_element(By.ID, "authBtn")
         
         username_input.clear()
         username_input.send_keys("logintest_user")
@@ -291,15 +298,19 @@ class TestFrontendFunctionality:
             time.sleep(1)  # Wait for layout to adjust
             
             # Check that main elements are still visible
-            assert driver.find_element(By.CLASS_NAME, "auth-screen") is not None
-            assert driver.find_element(By.CLASS_NAME, "app-screen") is not None
+            assert driver.find_element(By.ID, "authScreen") is not None
+            assert driver.find_element(By.ID, "appScreen") is not None
     
     def _register_and_login(self, driver, username, password):
         """Helper method to register and login a user."""
+        # Switch to registration mode
+        switch_mode = driver.find_element(By.ID, "switchMode")
+        switch_mode.click()
+        
         # Register
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
-        register_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Register')]")
+        register_button = driver.find_element(By.ID, "authBtn")
         
         username_input.clear()
         username_input.send_keys(username)
@@ -311,7 +322,7 @@ class TestFrontendFunctionality:
         
         # Wait for registration to complete
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "app-screen"))
+            EC.presence_of_element_located((By.ID, "appScreen"))
         )
     
     def _create_chat(self, driver, chat_name):
@@ -372,7 +383,7 @@ class TestFrontendPerformance:
         
         # Wait for page to fully load
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "auth-screen"))
+            EC.presence_of_element_located((By.ID, "authScreen"))
         )
         
         load_time = time.time() - start_time
@@ -385,9 +396,12 @@ class TestFrontendPerformance:
         driver.get("http://localhost:3000")
         
         # Register and login
+        switch_mode = driver.find_element(By.ID, "switchMode")
+        switch_mode.click()
+        
         username_input = driver.find_element(By.ID, "username")
         password_input = driver.find_element(By.ID, "password")
-        register_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Register')]")
+        register_button = driver.find_element(By.ID, "authBtn")
         
         username_input.clear()
         username_input.send_keys("largetest_user")
@@ -399,7 +413,7 @@ class TestFrontendPerformance:
         
         # Wait for login
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "app-screen"))
+            EC.presence_of_element_located((By.ID, "appScreen"))
         )
         
         # Create a chat
