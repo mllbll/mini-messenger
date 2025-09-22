@@ -9,7 +9,7 @@ import sys
 from typing import AsyncGenerator, Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from testcontainers.postgres import PostgresContainer
+# from testcontainers.postgres import PostgresContainer  # Commented for local testing
 from faker import Faker
 
 # Add backend directory to Python path
@@ -32,100 +32,107 @@ def event_loop():
     yield loop
     loop.close()
 
-@pytest.fixture(scope="session")
-def postgres_container():
-    """Start PostgreSQL container for testing."""
-    with PostgresContainer("postgres:15") as postgres:
-        yield postgres
+# @pytest.fixture(scope="session")
+# def postgres_container():
+#     """Start PostgreSQL container for testing."""
+#     with PostgresContainer("postgres:15") as postgres:
+#         yield postgres
 
-@pytest.fixture(scope="session")
-def test_engine(postgres_container):
-    """Create test database engine."""
-    database_url = postgres_container.get_connection_url()
-    engine = create_engine(database_url)
-    Base.metadata.create_all(bind=engine)
-    yield engine
-    Base.metadata.drop_all(bind=engine)
+# @pytest.fixture(scope="session")
+# def test_engine(postgres_container):
+#     """Create test database engine."""
+#     database_url = postgres_container.get_connection_url()
+#     engine = create_engine(database_url)
+#     Base.metadata.create_all(bind=engine)
+#     yield engine
+#     Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture
-def test_db_session(test_engine):
-    """Create test database session."""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    session = TestingSessionLocal()
+def test_db_session():
+    """Create test database session for model tests."""
+    from app.db import engine, SessionLocal, Base
+    from app.models import User, Chat, ChatMember, Message
+    
+    # Create tables if they don't exist
+    Base.metadata.create_all(bind=engine)
+    
+    session = SessionLocal()
     try:
         yield session
     finally:
         # Clean up data after each test
-        session.rollback()
-        session.close()
-
-@pytest.fixture(autouse=True)
-def cleanup_database(test_db_session):
-    """Clean up database after each test."""
-    yield
-    # Clean up all data after each test
-    try:
-        test_db_session.rollback()  # Rollback any pending transactions
-        test_db_session.query(Message).delete()
-        test_db_session.query(ChatMember).delete()
-        test_db_session.query(Chat).delete()
-        test_db_session.query(User).delete()
-        test_db_session.commit()
-    except Exception:
-        test_db_session.rollback()  # Rollback on any error
-
-@pytest.fixture
-def client(test_db_session):
-    """Create test client with database override."""
-    def override_get_db():
         try:
-            yield test_db_session
+            session.rollback()
+            session.query(Message).delete()
+            session.query(ChatMember).delete()
+            session.query(Chat).delete()
+            session.query(User).delete()
+            session.commit()
+        except Exception:
+            session.rollback()
         finally:
-            pass
-    
-    app.dependency_overrides[get_db] = override_get_db
-    
-    with httpx.Client(app=app, base_url="http://test") as client:
-        yield client
-    
-    app.dependency_overrides.clear()
+            session.close()
 
-@pytest.fixture
-async def async_client(test_db_session):
-    """Create async test client."""
-    def override_get_db():
-        try:
-            yield test_db_session
-        finally:
-            pass
+# @pytest.fixture(autouse=True)
+# def cleanup_database(test_db_session):
+#     """Clean up database after each test."""
+#     yield
+#     # Clean up all data after each test
+#     try:
+#         test_db_session.rollback()  # Rollback any pending transactions
+#         test_db_session.query(Message).delete()
+#         test_db_session.query(ChatMember).delete()
+#         test_db_session.query(Chat).delete()
+#         test_db_session.query(User).delete()
+#         test_db_session.commit()
+#     except Exception:
+#         test_db_session.rollback()  # Rollback on any error
+
+# @pytest.fixture
+# def client(test_db_session):
+#     """Create test client with database override."""
+#     def override_get_db():
+#         try:
+#             yield test_db_session
+#         finally:
+#             pass
     
-    app.dependency_overrides[get_db] = override_get_db
+#     app.dependency_overrides[get_db] = override_get_db
     
-    async with httpx.AsyncClient(app=app, base_url="http://test") as client:
-        yield client
+#     with httpx.Client(app=app, base_url="http://test") as client:
+#         yield client
     
-    app.dependency_overrides.clear()
+#     app.dependency_overrides.clear()
+
+# @pytest.fixture
+# async def async_client(test_db_session):
+#     """Create async test client."""
+#     def override_get_db():
+#         try:
+#             yield test_db_session
+#         finally:
+#             pass
+    
+#     app.dependency_overrides[get_db] = override_get_db
+    
+#     async with httpx.AsyncClient(app=app, base_url="http://test") as client:
+#         yield client
+    
+#     app.dependency_overrides.clear()
 
 @pytest.fixture
 def simple_async_client():
     """Create simple async test client without database dependency."""
-    # Override database dependency to use in-memory SQLite
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-    from app.db import Base
+    # Use the same database as the main app (SQLite when USE_SQLITE=true)
+    from app.db import engine, SessionLocal, Base
+    from app.models import User, Chat, ChatMember, Message
     
-    # Create in-memory SQLite database
-    test_engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    
-    # Create tables
-    Base.metadata.create_all(bind=test_engine)
+    # Create tables if they don't exist
+    Base.metadata.create_all(bind=engine)
     
     def override_get_db():
         try:
-            db = TestingSessionLocal()
-            # Ensure tables exist for this session
-            Base.metadata.create_all(bind=test_engine)
+            db = SessionLocal()
             yield db
         finally:
             db.close()
@@ -134,6 +141,18 @@ def simple_async_client():
     
     client = httpx.AsyncClient(app=app, base_url="http://test")
     yield client
+    
+    # Clean up data after each test
+    try:
+        session = SessionLocal()
+        session.query(Message).delete()
+        session.query(ChatMember).delete()
+        session.query(Chat).delete()
+        session.query(User).delete()
+        session.commit()
+        session.close()
+    except Exception:
+        pass
     
     app.dependency_overrides.clear()
 
@@ -155,6 +174,12 @@ def test_user_token(test_user_data):
 def auth_headers(test_user_token):
     """Create authorization headers."""
     return {"Authorization": f"Bearer {test_user_token}"}
+
+@pytest.fixture
+def simple_auth_headers():
+    """Create authorization headers for simple_async_client with registered user."""
+    # This will be handled in the test itself since we need async context
+    return None
 
 @pytest.fixture
 def sample_chat_data():

@@ -1,9 +1,21 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from datetime import datetime
 
 class UserCreate(BaseModel):
     username: str
     password: str
+    
+    @validator('username')
+    def username_must_not_be_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Username cannot be empty')
+        return v
+    
+    @validator('password')
+    def password_must_be_long_enough(cls, v):
+        if len(v) < 6:
+            raise ValueError('Password must be at least 6 characters long')
+        return v
 
 class UserOut(BaseModel):
     id: int
@@ -25,6 +37,12 @@ class ChatOut(BaseModel):
 class MessageCreate(BaseModel):
     chat_id: int
     content: str
+    
+    @validator('content')
+    def content_must_not_be_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Message content cannot be empty')
+        return v
 
 class MessageOut(BaseModel):
     id: int

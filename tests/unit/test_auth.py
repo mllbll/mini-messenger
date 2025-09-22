@@ -76,14 +76,20 @@ class TestTokenCreation:
         """Test token creation with custom expiry."""
         data = {"sub": "testuser"}
         expires_delta = timedelta(minutes=5)
+        
+        # Record time before token creation
+        before_time = datetime.utcnow()
         token = create_access_token(data, expires_delta)
+        after_time = datetime.utcnow()
         
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        exp_time = datetime.fromtimestamp(payload["exp"])
-        expected_time = datetime.utcnow() + expires_delta
+        exp_time = datetime.utcfromtimestamp(payload["exp"])  # Use utcfromtimestamp instead of fromtimestamp
         
-        # Allow 1 second tolerance
-        assert abs((exp_time - expected_time).total_seconds()) < 1
+        # Check that expiry time is within expected range (allow 1 second tolerance)
+        min_expected = before_time + expires_delta - timedelta(seconds=1)
+        max_expected = after_time + expires_delta + timedelta(seconds=1)
+        
+        assert min_expected <= exp_time <= max_expected
     
     def test_token_expiry(self):
         """Test that token expires correctly."""

@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from app.db import get_db
 from app.models import Chat, User
 from jose import JWTError, jwt
+from app.auth import SECRET_KEY
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ def get_current_user(authorization: str = Header(None), db: Session = Depends(ge
     
     token = authorization.split(" ")[1]
     try:
-        payload = jwt.decode(token, "supersecret", algorithms=["HS256"])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         username = payload.get("sub")
         if username is None:
             raise HTTPException(status_code=401, detail="Invalid token")
