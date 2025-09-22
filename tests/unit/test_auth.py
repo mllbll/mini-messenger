@@ -2,8 +2,15 @@
 Unit tests for authentication module.
 """
 import pytest
+import sys
+import os
 from datetime import datetime, timedelta
-from backend.app.auth import (
+from jose import jwt, JWTError
+
+# Add backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+
+from app.auth import (
     hash_password,
     verify_password,
     create_access_token,
@@ -11,7 +18,6 @@ from backend.app.auth import (
     ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
-from jose import jwt, JWTError
 
 
 class TestPasswordHashing:

@@ -3,9 +3,15 @@ Unit tests for API endpoints.
 """
 import pytest
 import json
+import sys
+import os
 from httpx import AsyncClient
-from backend.app.models import User, Chat, Message
-from backend.app.auth import hash_password
+
+# Add backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+
+from app.models import User, Chat, Message
+from app.auth import hash_password
 
 
 class TestUserEndpoints:

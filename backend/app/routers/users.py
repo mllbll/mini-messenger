@@ -1,19 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
-from app.db import SessionLocal
+from app.db import get_db
 from app.models import User
 from app.auth import hash_password, verify_password, create_access_token
 from app.schemas import UserCreate, UserOut, Token
 from jose import JWTError, jwt
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)):
     if not authorization or not authorization.startswith("Bearer "):

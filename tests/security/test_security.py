@@ -3,8 +3,14 @@ Security tests for mini-messenger API.
 """
 import pytest
 import json
+import sys
+import os
 from httpx import AsyncClient
-from backend.app.auth import create_access_token
+
+# Add backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+
+from app.auth import create_access_token
 
 
 class TestAuthenticationSecurity:

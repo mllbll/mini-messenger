@@ -5,14 +5,19 @@ import asyncio
 import pytest
 import httpx
 import os
+import sys
 from typing import AsyncGenerator, Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from testcontainers.postgres import PostgresContainer
-from backend.app.db import Base, get_db
-from backend.app.main import app
-from backend.app.auth import create_access_token
 from faker import Faker
+
+# Add backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+from app.db import Base, get_db
+from app.main import app
+from app.auth import create_access_token
 
 fake = Faker()
 

@@ -2,10 +2,16 @@
 Unit tests for database models.
 """
 import pytest
+import sys
+import os
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
-from backend.app.models import User, Chat, ChatMember, Message
-from backend.app.db import Base
+
+# Add backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+
+from app.models import User, Chat, ChatMember, Message
+from app.db import Base
 
 
 class TestUserModel:
