@@ -28,7 +28,7 @@ class TestAuthenticationSecurity:
         ]
         
         for headers in invalid_headers:
-            response = await async_client.get("/api/users/me", headers=headers)
+            response = await simple_async_client.get("/api/users/me", headers=headers)
             assert response.status_code == 401
     
     @pytest.mark.asyncio
@@ -44,7 +44,7 @@ class TestAuthenticationSecurity:
         expired_token = create_access_token(expired_data)
         
         headers = {"Authorization": f"Bearer {expired_token}"}
-        response = await async_client.get("/api/users/me", headers=headers)
+        response = await simple_async_client.get("/api/users/me", headers=headers)
         assert response.status_code == 401
     
     @pytest.mark.asyncio
@@ -58,14 +58,14 @@ class TestAuthenticationSecurity:
         tampered_token = valid_token[:-5] + "XXXXX"
         
         headers = {"Authorization": f"Bearer {tampered_token}"}
-        response = await async_client.get("/api/users/me", headers=headers)
+        response = await simple_async_client.get("/api/users/me", headers=headers)
         assert response.status_code == 401
     
     @pytest.mark.asyncio
     @pytest.mark.security
     async def test_missing_authorization_header(self, simple_async_client):
         """Test API without authorization header."""
-        response = await async_client.get("/api/users/me")
+        response = await simple_async_client.get("/api/users/me")
         assert response.status_code == 401
     
     @pytest.mark.asyncio
@@ -82,7 +82,7 @@ class TestAuthenticationSecurity:
         ]
         
         for headers in invalid_headers:
-            response = await async_client.get("/api/users/me", headers=headers)
+            response = await simple_async_client.get("/api/users/me", headers=headers)
             assert response.status_code == 401
 
 
@@ -299,7 +299,7 @@ class TestAuthorizationSecurity:
         headers = {"Authorization": f"Bearer {token}"}
         
         # Use token successfully
-        response = await async_client.get("/api/users/me", headers=headers)
+        response = await simple_async_client.get("/api/users/me", headers=headers)
         assert response.status_code == 200
         
         # Note: In a real implementation, you would have a logout endpoint
@@ -307,7 +307,7 @@ class TestAuthorizationSecurity:
         # continues to work (which is expected behavior for JWT tokens)
         
         # Token should still work (JWT tokens are stateless)
-        response = await async_client.get("/api/users/me", headers=headers)
+        response = await simple_async_client.get("/api/users/me", headers=headers)
         assert response.status_code == 200
 
 

@@ -27,8 +27,12 @@ class TestFrontendFunctionality:
         chrome_options.add_argument("--window-size=1920,1080")
         
         # Use webdriver-manager to automatically handle ChromeDriver version
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        try:
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+        except Exception:
+            # Fallback to system ChromeDriver if webdriver-manager fails
+            driver = webdriver.Chrome(options=chrome_options)
         driver.implicitly_wait(10)
         yield driver
         driver.quit()
@@ -361,8 +365,12 @@ class TestFrontendPerformance:
         })
         
         # Use webdriver-manager to automatically handle ChromeDriver version
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        try:
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+        except Exception:
+            # Fallback to system ChromeDriver if webdriver-manager fails
+            driver = webdriver.Chrome(options=chrome_options)
         driver.implicitly_wait(10)
         yield driver
         driver.quit()

@@ -109,7 +109,31 @@ async def async_client(test_db_session):
 @pytest.fixture
 def simple_async_client():
     """Create simple async test client without database dependency."""
-    return httpx.AsyncClient(app=app, base_url="http://test")
+    # Override database dependency to use in-memory SQLite
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from app.db import Base
+    
+    # Create in-memory SQLite database
+    test_engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    
+    # Create tables
+    Base.metadata.create_all(bind=test_engine)
+    
+    def override_get_db():
+        try:
+            db = TestingSessionLocal()
+            yield db
+        finally:
+            db.close()
+    
+    app.dependency_overrides[get_db] = override_get_db
+    
+    client = httpx.AsyncClient(app=app, base_url="http://test")
+    yield client
+    
+    app.dependency_overrides.clear()
 
 @pytest.fixture
 def test_user_data():
