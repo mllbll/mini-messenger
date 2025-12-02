@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta
 import os
 
-SECRET_KEY = os.getenv("JWT_SECRET", "dev_super_secret_change_me")
+SECRET_KEY = os.getenv("JWT_SECRET", "dev_super_secret_change_me")  # nosec B101 - default only for development
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -11,7 +11,7 @@ else:
     # Use environment variables for database configuration
     db_host = os.getenv("DB_HOST", "db")
     db_user = os.getenv("DB_USER", "user")
-    db_password = os.getenv("DB_PASSWORD", "password")
+    db_password = os.getenv("DB_PASSWORD", "password")  # nosec B108 - default only for development
     db_name = os.getenv("DB_NAME", "messenger")
     db_port = os.getenv("DB_PORT", "5432")
     

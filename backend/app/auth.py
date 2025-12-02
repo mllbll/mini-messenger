@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey123456789")
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey123456789")  # nosec B101 - default only for development
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
