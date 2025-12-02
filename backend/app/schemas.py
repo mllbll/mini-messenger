@@ -15,13 +15,17 @@ class UserCreate(BaseModel):
     def password_must_be_long_enough(cls, v):
         if len(v) < 6:
             raise ValueError('Password must be at least 6 characters long')
+        # Bcrypt has a maximum password length of 72 bytes
+        # Truncate if necessary
+        if len(v.encode('utf-8')) > 72:
+            v = v.encode('utf-8')[:72].decode('utf-8', errors='ignore')
         return v
 
 class UserOut(BaseModel):
     id: int
     username: str
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
@@ -51,4 +55,4 @@ class MessageOut(BaseModel):
     content: str
     timestamp: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True

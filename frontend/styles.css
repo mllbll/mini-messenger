@@ -566,14 +566,18 @@ body {
     width: 100vw !important;
     height: 100vh !important;
     background: rgba(0, 0, 0, 0.6) !important;
-    display: flex !important;
+    display: none !important;
     align-items: center !important;
     justify-content: center !important;
     z-index: 99999 !important;
     backdrop-filter: blur(4px) !important;
-    animation: modalFadeIn 0.3s ease-out !important;
     margin: 0 !important;
     padding: 0 !important;
+}
+
+.modal.show {
+    display: flex !important;
+    animation: modalFadeIn 0.3s ease-out !important;
 }
 
 @keyframes modalFadeIn {
