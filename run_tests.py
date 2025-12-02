@@ -8,11 +8,16 @@ import subprocess
 import argparse
 from pathlib import Path
 
+# Set USE_SQLITE for tests
+os.environ["USE_SQLITE"] = "true"
+
 
 def run_command(command, cwd=None):
     """Run a command and return the result."""
     print(f"Running: {command}")
-    result = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True)
+    env = os.environ.copy()
+    env["USE_SQLITE"] = "true"
+    result = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True, env=env)
     
     if result.stdout:
         print("STDOUT:", result.stdout)

@@ -2,15 +2,23 @@
 Frontend functionality tests using Selenium.
 """
 import pytest
+
+# Skip all frontend tests if Selenium is not available or frontend is not running
+try:
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.chrome.options import Options
+    from selenium.common.exceptions import TimeoutException, NoSuchElementException
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+
 import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
+@pytest.mark.skipif(not SELENIUM_AVAILABLE, reason="Frontend tests require Selenium and running frontend - skipped for CI")
 class TestFrontendFunctionality:
     """Test frontend functionality with Selenium."""
     
@@ -468,6 +476,7 @@ class TestFrontendFunctionality:
         )
 
 
+@pytest.mark.skipif(not SELENIUM_AVAILABLE, reason="Frontend tests require Selenium and running frontend - skipped for CI")
 class TestFrontendPerformance:
     """Test frontend performance."""
     

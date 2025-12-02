@@ -10,17 +10,35 @@ from typing import AsyncGenerator, Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from testcontainers.postgres import PostgresContainer  # Commented for local testing
-from faker import Faker
+import random
+import string
 
 # Add backend directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+
+# Set USE_SQLITE environment variable before importing app modules
+os.environ["USE_SQLITE"] = "true"
 
 from app.db import Base, get_db
 from app.main import app
 from app.auth import create_access_token
 from app.models import User, Chat, ChatMember, Message
 
-fake = Faker()
+# Simple fake data generators (replacing faker)
+def fake_password(length=12):
+    """Generate a random password."""
+    chars = string.ascii_letters + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))
+
+def fake_sentence(nb_words=3):
+    """Generate a random sentence."""
+    words = ['test', 'chat', 'message', 'user', 'sample', 'random', 'example']
+    return ' '.join(random.choice(words) for _ in range(nb_words))
+
+def fake_text(max_nb_chars=200):
+    """Generate random text."""
+    chars = string.ascii_letters + string.digits + ' '
+    return ''.join(random.choice(chars) for _ in range(min(max_nb_chars, 200)))
 
 # Test database URL
 TEST_DATABASE_URL = "postgresql+psycopg2://test:test@localhost:5432/test_messenger"
@@ -168,7 +186,7 @@ def test_user_data():
     import time
     return {
         "username": f"testuser_{int(time.time() * 1000)}",
-        "password": fake.password(length=12)
+        "password": fake_password(length=12)
     }
 
 @pytest.fixture
@@ -191,14 +209,14 @@ def simple_auth_headers():
 def sample_chat_data():
     """Generate sample chat data."""
     return {
-        "name": fake.sentence(nb_words=3)
+        "name": fake_sentence(nb_words=3)
     }
 
 @pytest.fixture
 def sample_message_data():
     """Generate sample message data."""
     return {
-        "content": fake.text(max_nb_chars=200)
+        "content": fake_text(max_nb_chars=200)
     }
 
 @pytest.fixture
